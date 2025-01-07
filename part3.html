@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url(images/TheUngodlyMachineChallenge.jpg) no-repeat center center fixed; /* Update image path if needed */
+      background: url('background.jpg') no-repeat center center fixed; /* Update image path if needed */
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -101,16 +101,6 @@
       pointer-events: none;
       z-index: 0;
     }
-    #rewardVideo {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      height: auto;
-      z-index: 1000;
-      background: #000;
-    }
   </style>
   <!-- Load canvas-confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -120,7 +110,7 @@
     <div class="game-box">
       <h1>Ungodly Machine: Part 3 (Decoder Challenge)</h1>
       <p class="description">
-        Click a colored wire and then click the hole that you think it connects to. 
+        Click a colored wire and then click the hole that you think matches the first letter of the wire's color. 
         If correct, a rope will form between the wire and the hole. Connect all wires correctly to complete the machine.
       </p>
       <svg id="connections"></svg>
@@ -193,6 +183,7 @@
     holes.forEach(hole => {
       hole.addEventListener('click', () => {
         if (!selectedWire) return;
+
         const wireColor = selectedWire.dataset.color;
         const targetLetter = wireColor.charAt(0).toUpperCase();
         const holeLetter = hole.dataset.letter;
@@ -223,49 +214,36 @@
         // Check if all wires are connected
         const allConnected = Array.from(wires).every(w => w.dataset.connected === 'true');
         if (allConnected) {
-          // Play reward video
-            const video = document.createElement('video');
-            video.id = 'rewardVideo';
-            video.src = 'videos/Artifact1.mp4'; // Update path/extension as necessary
-            video.autoplay = true;
-            video.muted = true;         // Mute video for autoplay on mobile
-            video.playsInline = true;   // Ensures inline playback on iOS Safari
-            video.controls = true;      // Optional: show controls if desired
-            document.body.appendChild(video);
-            video.onended = () => {
-            video.remove();
-            // Clear existing content
-            document.querySelector('.content-wrapper').remove();
-            // Display congratulatory message with confetti
-            document.body.innerHTML = `
-              <div style="display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; background:black; color:white;">
-                <h1 style="font-size:4em; margin-bottom:20px;">CONGRATULATIONS!</h1>
-                <p style="font-size:1.5em; max-width:600px; text-align:center;">
-                  Congratulation on beating the Ungodly Machine, you may now take the artifact and head back to the lounge.
-                </p>
-              </div>
-            `;
-            // Launch confetti animation
-            const duration = 5 * 1000;
-            const end = Date.now() + duration;
-            (function frame() {
-              confetti({
-                particleCount: 3,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 }
-              });
-              confetti({
-                particleCount: 3,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 }
-              });
-              if (Date.now() < end) {
-                requestAnimationFrame(frame);
-              }
-            }());
-          }
+          // Clear existing content and show congratulatory message with confetti
+          document.querySelector('.content-wrapper').remove();
+          document.body.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; background:black; color:white;">
+              <h1 style="font-size:4em; margin-bottom:20px;">CONGRATULATIONS!</h1>
+              <p style="font-size:1.5em; max-width:600px; text-align:center;">
+                Congratulation on beating the Ungodly Machine, you may now take the artifact and head back to the lounge.
+              </p>
+            </div>
+          `;
+          // Launch confetti animation
+          const duration = 5 * 1000;
+          const end = Date.now() + duration;
+          (function frame() {
+            confetti({
+              particleCount: 3,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0 }
+            });
+            confetti({
+              particleCount: 3,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1 }
+            });
+            if (Date.now() < end) {
+              requestAnimationFrame(frame);
+            }
+          }());
         }
       });
     });
